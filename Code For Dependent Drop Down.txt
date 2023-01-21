@@ -1,0 +1,55 @@
+class Country(models.Model):
+    name = models.CharField(max_length=100)
+
+class State(models.Model):
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+# ================================================================
+
+from django.http import JsonResponse
+
+def load_states(request):
+    country_id = request.GET.get('country')
+    states = State.objects.filter(country_id=country_id).order_by('name')
+    return JsonResponse(list(states.values()), safe=False)
+# ================================================================
+
+from django.urls import path
+from .views import load_states
+
+urlpatterns = [
+    path('load-states/', load_states, name='load_states'),
+]
+# ================================================================
+
+<form>
+  <select id="country" name="country">
+    {% for country in countries %}
+      <option value="{{ country.id }}">{{ country.name }}</option>
+    {% endfor %}
+  </select>
+
+  <select id="state" name="state">
+  </select>
+</form>
+
+<script>
+  $(document).ready(function(){
+    $("#country").change(function(){
+      var country_id = $(this).val();
+      $.ajax({
+        url: "{% url 'load_states' %}",
+        data: {
+          'country': country_id
+        },
+        success: function(data){
+          $("#state").html('');
+          $("#state").append('<option value="">Select State</option>');
+          $.each(data, function(index, value){
+            $("#state").append('<option value="'+value.id+'">'+value.name+'</option>');
+          });
+        }
+      });
+    });
+  });
+</script>

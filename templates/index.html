@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% comment %} {% load bootstrap5 %} {% endcomment %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %} 
+    {% load crispy_forms_filters %}
+    {% load crispy_forms_tags %}
+    {% comment %} {% crispy example_form example_form.helper %} {% endcomment %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<script type="text/javascript" src="{% static 'js/jquery-3.6.3.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-warning">
+        <img src="{% static 'media/MS.svg'%}" class="card-img-top text-center" style="width:60px;height:60px;"
+    alt="...">
+        Dependant Dropdown Example</h1>
+        <hr>
+        
+    <div class="row">
+        <!-- {% comment %} {% bootstrap_form form layout='inline' %} {% endcomment %}-->
+        <div class="col-6">
+           
+            {% comment %} {% bootstrap_formset formset layout='horizontal' %} {% endcomment %}
+<form action="" method="post" class="form">
+    {% csrf_token %}
+        {% comment %} {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    {% endbuttons %} {% endcomment %}
+{% crispy form %}
+    {% comment %} {% bootstrap_button button_type="submit" content="SUBMIT" %}
+    {% bootstrap_button button_type="reset" content="Cancel" %}  {% endcomment %}
+</form>
+
+</div>
+</div>
+<br>
+<table class="table table-bordered table-striped">
+    <tr>
+        <th class='text-center'>#<th>
+        <th>PersionName<th>
+        <th>Address1 <th>
+        <th>Address2 <th>
+        <th>Division <th>
+        <th>District <th>
+        <th>Upazila <th>
+        <th>PostOffice <th>
+        <th>PostalCode <th>
+    </tr>
+    {% for x in PresentAdd%}
+    <tr>
+        <td class='text-center'>{{x.id}}<td>
+        <td>{{x.PersionName}}<td>
+        <td>{{x.Address1 }}<td>
+        <td>{{x.Address2 }}<td>
+        <td>{{x.Division }}<td>
+        <td>{{x.District }}<td>
+        <td>{{x.Upazila }}<td>
+        <td>{{x.PostOffice }}<td>
+        <td>{{x.PostalCode }}<td>
+    </tr>
+    {% endfor%}
+
+</table>
+</div>
+<script>
+// Initialize Dropdown options ===================
+$('#id_District').empty();
+$('#id_Upazila').empty();   
+$('#id_District').append(`<option class='text-muted' value selected>Select District</option>`);        
+$('#id_Upazila').append(`<option class='text-muted' value selected>Select Upazila</option>`);
+// End Initialize Dropdown options ===============
+
+$('#id_Division').change(function() {
+    let Division_id = $(this).val();
+    $('#id_District').empty();
+    $('#id_Upazila').empty();   
+    $('#id_District').append(`<option class='text-muted' value selected>Select District</option>`);        
+    $('#id_Upazila').append(`<option class='text-muted' value selected>Select Upazila</option>`);
+    $.ajax({
+        url: '/get_districts/' + Division_id,
+        success: function(data) {
+            $.each(data, function(index, District) {
+                $('#id_District').append($('<option>', {
+                value : District.pk,
+                text : District.fields.BanglaDistrictName
+                }));
+            });
+        }
+    });
+});
+
+$('#id_District').change(function() {
+    let District_id = $(this).val();
+    $('#id_Upazila').empty();   
+    $('#id_Upazila').append(`<option class='text-muted' value selected>Select Upazila</option>`);
+    $.ajax({
+        url: '/get_upazilas/' + District_id,
+        success: function(data) {
+            $.each(data, function(index, Upazila) {
+                $('#id_Upazila').append($('<option>', {
+                value : Upazila.pk,
+                text : Upazila.fields.BanglaUpazilaName
+                }));
+            });
+        }
+    });
+});
+
+</script>
+</body>
+</html>
