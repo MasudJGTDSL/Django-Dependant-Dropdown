@@ -12,7 +12,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'media/favicon_io/favicon-16x16.png'%}">
+    <title>Dependent Dropdown Example</title>
 <script type="text/javascript" src="{% static 'js/jquery-3.6.3.js' %}"></script>
 </head>
 <body>
@@ -74,16 +75,16 @@
 // Initialize Dropdown options ===================
 $('#id_District').empty();
 $('#id_Upazila').empty();   
-$('#id_District').append(`<option class='text-muted' value selected>Select District</option>`);        
-$('#id_Upazila').append(`<option class='text-muted' value selected>Select Upazila</option>`);
+$('#id_District').append(`<option class='text-muted' value selected>------------</option>`);        
+$('#id_Upazila').append(`<option class='text-muted' value selected>------------</option>`);
 // End Initialize Dropdown options ===============
 
 $('#id_Division').change(function() {
     let Division_id = $(this).val();
     $('#id_District').empty();
     $('#id_Upazila').empty();   
-    $('#id_District').append(`<option class='text-muted' value selected>Select District</option>`);        
-    $('#id_Upazila').append(`<option class='text-muted' value selected>Select Upazila</option>`);
+    $('#id_District').append(`<option class='text-muted' value selected>------------</option>`);        
+    $('#id_Upazila').append(`<option class='text-muted' value selected>------------</option>`);
     $.ajax({
         url: '/get_districts/' + Division_id,
         success: function(data) {
@@ -100,7 +101,7 @@ $('#id_Division').change(function() {
 $('#id_District').change(function() {
     let District_id = $(this).val();
     $('#id_Upazila').empty();   
-    $('#id_Upazila').append(`<option class='text-muted' value selected>Select Upazila</option>`);
+    $('#id_Upazila').append(`<option class='text-muted' value selected>------------</option>`);
     $.ajax({
         url: '/get_upazilas/' + District_id,
         success: function(data) {
